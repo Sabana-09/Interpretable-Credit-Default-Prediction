@@ -1,0 +1,84 @@
+
+Technical Summary of Model Development, Tuning, and Interpretability
+
+This document summarizes the full machine-learning workflow used to build a credit default prediction model using the UCI Credit Card dataset. The steps include preprocessing, model training, hyperparameter tuning, performance evaluation, and interpretability using SHAP values. The goal is to create a transparent, auditable model suitable for business use and regulatory review.
+
+1. Dataset
+The dataset consists of 30,000 credit card clients with 23 predictor variables including demographics, payment history, bill amounts, credit limits, and repayment amounts. The target variable is “default.payment.next.month.”
+
+2. Preprocessing Strategy
+Numeric variables (LIMIT_BAL, BILL_AMT1–6, PAY_AMT1–6, PAY_0–PAY_6, AGE) were imputed using median values and scaled. Categorical features (SEX, EDUCATION, MARRIAGE) were imputed with the mode and encoded using OneHotEncoder with handle_unknown='ignore'. A ColumnTransformer combined these into a unified preprocessing pipeline.
+
+3. Model Pipeline
+The model pipeline uses:
+- ColumnTransformer for preprocessing
+- XGBClassifier as the estimator
+- GridSearchCV for hyperparameter tuning
+
+The final best hyperparameters were:
+- n_estimators = 100
+- max_depth = 6
+- learning_rate = 0.1
+
+4. Performance Metrics
+On the 6,000-row test set, the model achieved:
+- Accuracy = 0.819
+- Precision = 0.6685
+- Recall = 0.3602
+- F1 score = 0.4682
+- ROC–AUC = 0.7797
+
+Interpretation:
+The model performs well for identifying non-default cases (precision is high), but recall is lower, meaning many true defaults are missed.
+
+5. Global Feature Importance
+
+5.1 XGBoost Gain Importance
+Extracted from the booster:
+
+f0: 6.89  
+f1: 21.43  
+f2: 7.55  
+f3: 10.00  
+f4: 6.45  
+f5: 7.05  
+f6: 339.11  
+f7: 94.53  
+f8: 44.56  
+f9: 39.62  
+f10: 38.02  
+f11: 34.26  
+f12: 15.12  
+f13: 8.77  
+f14: 8.52  
+f15: 8.15  
+f16: 6.32  
+f17: 8.42  
+f18: 12.91  
+f19: 25.78  
+f20: 21.16  
+f21: 11.78  
+f22: 10.08  
+f23: 11.89
+
+The highest contributor (f6 ≈ 339.11) maps to num__PAY_0.
+
+5.2 SHAP Global Summary
+Top SHAP features were:
+1. num__PAY_0
+2. num__MARRIAGE
+3. num__LIMIT_BAL
+4. num__BILL_AMT5
+5. num__PAY_AMT1
+
+SHAP reveals directional effects and interactions that gain importance cannot.
+
+6. Local SHAP Summary (Full details in local_shap_interpretation)
+Case 3560 (TP): Large positive effects from BILL_AMT5 (+0.39), LIMIT_BAL (+0.29), PAY_0 (+0.28).  
+Case 2156 (TN): Strong negative contributions from PAY_0 (–0.36), LIMIT_BAL (–0.31), PAY_AMT1 (–0.29).  
+Case 17778 (FP): Large positive PAY_0 value (+1.23), but true label was 0.
+
+7. Limitations and Recommendations
+The model focuses heavily on delinquency variables and sometimes over-penalizes customers with past payment issues but who later recover. MARRIAGE's influence must be monitored for fairness. Threshold tuning could improve recall.
+
+This concludes the technical summary for the model development process.
