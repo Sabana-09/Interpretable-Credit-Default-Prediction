@@ -1,5 +1,0 @@
-
-Final analysis (<= 500 words) — Business implications:
-- Summarize how top features influence default risk.
-- Note any fairness concerns (e.g., feature X disproportionately impacts demographic group Y).
-- Suggested actions for lending officers: e.g., use feature signals to trigger manual review, collect missing data, adjust thresholds for fairness.
