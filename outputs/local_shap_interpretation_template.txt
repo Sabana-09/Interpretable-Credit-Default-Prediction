@@ -1,0 +1,7 @@
+
+Local SHAP explanations (3 cases) - For each case include:
+- Case index: <index>
+- True label / Predicted label: <true>/<pred>
+- Top 3 positive features (pushing towards default): feature1 (value, SHAP contribution), ...
+- Top 3 negative features (pushing away from default): featureA (value, SHAP contribution), ...
+- Short explanation (2-3 sentences) on why model made this decision.

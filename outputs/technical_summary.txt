@@ -1,0 +1,8 @@
+
+PROJECT: Interpretable ML - SHAP Analysis of Credit Risk
+
+Brief approach:
+1. Preprocessed numeric features (median imputation + scaling) and categorical features (most-frequent imputation + one-hot).
+2. Trained an XGBoost classifier with hyperparameter tuning (GridSearchCV) optimizing f1.
+3. Evaluated model on test set using accuracy, F1, precision, recall and ROC-AUC (when available).
+4. Compared model-specific feature importance with SHAP global summary and generated local SHAP explanations for 3-5 representative loans.
